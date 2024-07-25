@@ -63,20 +63,22 @@ class TagSerializer(serializers.ModelSerializer):
 class TaskWriteSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     categories = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Category.objects.all())
+        many=True, queryset=Category.objects.all(), required=False)
     tags = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Tag.objects.all())
+        many=True, queryset=Tag.objects.all(), required=False)
 
     class Meta:
         model = Task
         fields = '__all__'
 
     def create(self, validated_data):
-        categories_data = validated_data.pop('categories')
-        tags_data = validated_data.pop('tags')
+        categories_data = validated_data.pop('categories', None)
+        tags_data = validated_data.pop('tags', None)
         task = Task.objects.create(**validated_data)
-        task.categories.set(categories_data)
-        task.tags.set(tags_data)
+        if categories_data:
+            task.categories.set(categories_data)
+        if tags_data:
+            task.tags.set(tags_data)
         return task
 
     def update(self, instance, validated_data):
