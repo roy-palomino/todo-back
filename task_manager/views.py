@@ -24,7 +24,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             key=settings.SIMPLE_JWT['AUTH_COOKIE'],
             value=refresh_token,
             httponly=True,
-            secure=True,
+            secure=False,
             samesite='Lax'
         )
         del response.data['refresh']
@@ -40,7 +40,7 @@ class CustomTokenRefreshView(TokenRefreshView):
                 key=settings.SIMPLE_JWT['AUTH_COOKIE'],
                 value=response.data['refresh'],
                 httponly=True,
-                secure=True,
+                secure=False,
                 samesite='Lax'
             )
             del response.data['refresh']
