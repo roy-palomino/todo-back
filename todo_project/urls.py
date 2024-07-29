@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from task_manager.views import CustomTokenRefreshView, CustomTokenObtainPairView
+from task_manager.views import CustomTokenRefreshView, CustomTokenObtainPairView, LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -14,4 +14,5 @@ urlpatterns = [
         CustomTokenRefreshView.as_view(),
         name='token_refresh'
     ),
+    path('api/token/logout/', LogoutView.as_view(), name='logout'),
 ]
