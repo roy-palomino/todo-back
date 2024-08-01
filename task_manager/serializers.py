@@ -13,11 +13,19 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     tasks = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Task.objects.all())
-    settings = UserSettingsSerializer
+    settings = UserSettingsSerializer(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'tasks', 'settings']
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'tasks',
+            'settings'
+        ]
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
