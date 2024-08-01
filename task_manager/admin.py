@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Category, Tag
+from .models import Task, Category, Tag, UserSettings
 
 
 @admin.register(Task)
@@ -14,4 +14,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(UserSettings)
+class UserSettings(admin.ModelAdmin):
     pass
