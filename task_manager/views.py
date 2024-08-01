@@ -4,9 +4,12 @@ from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import viewsets, permissions, generics, views
 from rest_framework.response import Response
+from rest_framework import mixins
+from rest_framework import status
 
-from .models import Category, Tag, Task
+from .models import Category, Tag, Task, UserSettings
 from .serializers import (
+    UserSettingsSerializer,
     UserSerializer,
     UserRegistrationSerializer,
     CategorySerializer,
@@ -56,6 +59,44 @@ class LogoutView(views.APIView):
         response.status_code = 204
         return response
 
+
+class SettingsViewset(
+    viewsets.GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+):
+    serializer_class = UserSettingsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        settings = UserSettings.objects.filter(user=self.request.user)
+        return settings
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if queryset.exists():
+            serializer = self.get_serializer(queryset.first())
+            return Response(serializer.data)
+        return Response(
+            {'detail': 'Settings not found'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # TODO: Configure updated method to allow updates without settings id
+
+    # def update(self, request, *args, **kwargs):
+    #     queryset = self.get_queryset()
+    #     if queryset.exists():
+    #         instance = queryset.first()
+    #         serializer = self.get_serializer(instance, data=request.data, partial=True)
+    #         serializer.is_valid(raise_exception=True)
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(
+    #         {"detail": "No settings found."},
+    #         status=status.HTTP_404_NOT_FOUND
+    #     )
 
 class UserViewset(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all()
