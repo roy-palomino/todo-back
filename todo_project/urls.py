@@ -1,7 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from task_manager.views import CustomTokenRefreshView, CustomTokenObtainPairView, LogoutView
+from task_manager.views import (
+    SelfView,
+    CustomTokenRefreshView,
+    CustomTokenObtainPairView,
+    LogoutView,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
