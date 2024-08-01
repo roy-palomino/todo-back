@@ -11,8 +11,6 @@ class UserSettingsSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    tasks = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Task.objects.all())
     settings = UserSettingsSerializer(read_only=True)
 
     class Meta:
@@ -23,7 +21,6 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'email',
-            'tasks',
             'settings'
         ]
 
