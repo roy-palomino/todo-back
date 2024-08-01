@@ -1,16 +1,23 @@
 from rest_framework import serializers
 
-from .models import Category, Tag, Task
+from .models import Category, Tag, Task, UserSettings
 from django.contrib.auth.models import User
+
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSettings
+        fields = ['hide_completed_tasks']
 
 
 class UserSerializer(serializers.ModelSerializer):
     tasks = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Task.objects.all())
+    settings = UserSettingsSerializer
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'tasks']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'tasks', 'settings']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
