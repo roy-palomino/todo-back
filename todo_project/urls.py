@@ -20,4 +20,5 @@ urlpatterns = [
         name='token_refresh'
     ),
     path('api/token/logout/', LogoutView.as_view(), name='logout'),
+    path('api/self/', SelfView.as_view(), name='self')
 ]
