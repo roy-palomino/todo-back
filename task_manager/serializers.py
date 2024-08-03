@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 class UserSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserSettings
-        fields = ['hide_completed_tasks']
+        fields = ['id', 'hide_completed_tasks']
 
 
 class UserSerializer(serializers.ModelSerializer):
