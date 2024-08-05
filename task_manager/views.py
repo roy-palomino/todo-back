@@ -134,8 +134,14 @@ class TaskViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        list_all = self.request.query_params.get(
+            'list_all', 'False'
+        ).lower() in ['true', '1', 't', 'y']
         user = self.request.user
-        return Task.objects.filter(owner=user)
+        tasks = Task.objects.filter(owner=user)
+        if not list_all:
+            tasks = tasks.filter(due_date__isnull=False)
+        return tasks
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
