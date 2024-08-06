@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework import viewsets, permissions, generics, views
@@ -133,14 +134,21 @@ class TagViewset(viewsets.ModelViewSet):
 class TaskViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
+    def bool_eval(self, str_val):
+        return str_val.lower() in ['true', '1', 't', 'y']
+
     def get_queryset(self):
-        list_all = self.request.query_params.get(
-            'list_all', 'False'
-        ).lower() in ['true', '1', 't', 'y']
+        today = timezone.now()
+        list_all = self.bool_eval(self.request.query_params.get('list_all', 'False'))
+        show_past_tasks = self.bool_eval(
+            self.request.query_params.get('show_past_tasks', 'False')
+        )
         user = self.request.user
         tasks = Task.objects.filter(owner=user)
         if not list_all:
             tasks = tasks.filter(due_date__isnull=False)
+        if not show_past_tasks:
+            tasks = tasks.filter(due_date__gte=today)
         return tasks
 
     def get_serializer_class(self):
